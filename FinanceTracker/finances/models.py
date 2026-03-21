@@ -66,6 +66,11 @@ class Target(models.Model, BaseMixin):
     )
     month = models.IntegerField()
     year = models.IntegerField()
+    user = models.ForeignKey(
+        'accounts.AppUser',
+        on_delete=models.CASCADE,
+        related_name='targets',
+    )
 
     def __str__(self):
         return f'{self.month:02}-{self.year}'
