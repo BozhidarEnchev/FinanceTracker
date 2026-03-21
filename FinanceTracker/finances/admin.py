@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from FinanceTracker.finances.models import Transaction, TransactionCategory, FinancialAccount, Target
+from FinanceTracker.finances.models import Transaction, TransactionCategory, FinancialAccount, MonthlyBudget
 
 
 @admin.register(Transaction)
@@ -11,8 +11,8 @@ class TransactionAdmin(admin.ModelAdmin):
 class TransactionCategoryAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Target)
-class TargetAdmin(admin.ModelAdmin):
+@admin.register(MonthlyBudget)
+class MonthlyBudgetAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(FinancialAccount)

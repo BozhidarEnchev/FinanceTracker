@@ -51,7 +51,7 @@ class TransactionCategory(models.Model, BaseMixin):
         return f'{self.name}'
 
 
-class Target(models.Model, BaseMixin):
+class MonthlyBudget(models.Model, BaseMixin):
     needs_budget = models.DecimalField(
         decimal_places=2,
         max_digits=10,
@@ -69,7 +69,7 @@ class Target(models.Model, BaseMixin):
     user = models.ForeignKey(
         'accounts.AppUser',
         on_delete=models.CASCADE,
-        related_name='targets',
+        related_name='budgets',
     )
 
     def __str__(self):
