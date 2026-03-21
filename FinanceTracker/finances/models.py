@@ -26,10 +26,16 @@ class Transaction(models.Model, BaseMixin):
         null=True,
     )
 
+    def __str__(self):
+        return f'{self.date}-{self.amount}'
 
 class TransactionCategory(models.Model, BaseMixin):
     name = models.CharField(
         max_length=100,
+    )
+    user_id = models.ForeignKey(
+        'accounts.AppUser',
+        on_delete=models.CASCADE
     )
     is_need = models.BooleanField(
         default=False,
@@ -37,6 +43,9 @@ class TransactionCategory(models.Model, BaseMixin):
     is_saving = models.BooleanField(
         default=False,
     )
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Target(models.Model, BaseMixin):
@@ -55,6 +64,9 @@ class Target(models.Model, BaseMixin):
     month = models.IntegerField()
     year = models.IntegerField()
 
+    def __str__(self):
+        return f'{self.month:02}-{self.year}'
+
 
 class FinancialAccount(models.Model, BaseMixin):
     name = models.CharField(
@@ -68,3 +80,6 @@ class FinancialAccount(models.Model, BaseMixin):
         decimal_places=2,
         max_digits=10,
     )
+
+    def __str__(self):
+        return f'{self.name}'
