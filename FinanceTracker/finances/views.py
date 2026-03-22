@@ -40,11 +40,14 @@ class TransactionListCreateView(UserOwnedListCreateView):
             transaction_obj = serializer.save()
             account = transaction_obj.account
             category = transaction_obj.category
+            user = transaction_obj.user
 
             if category.is_saving:
                 account.amount += transaction_obj.amount
+                user.total_amount += transaction_obj.amount
             else:
                 account.amount -= transaction_obj.amount
+                user.total_amount += transaction_obj.amount
 
             account.save()
 
