@@ -1,5 +1,6 @@
 from threading import active_count
 
+from django.db import transaction
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -35,16 +36,17 @@ class TransactionListCreateView(UserOwnedListCreateView):
         return TransactionReadSerializer
 
     def perform_create(self, serializer):
-        transaction_obj = serializer.save()
-        account = transaction_obj.account
-        category = transaction_obj.category
+        with transaction.atomic():
+            transaction_obj = serializer.save()
+            account = transaction_obj.account
+            category = transaction_obj.category
 
-        if category.is_saving:
-            account.amount += transaction_obj.amount
-        else:
-            account.amount -= transaction_obj.amount
+            if category.is_saving:
+                account.amount += transaction_obj.amount
+            else:
+                account.amount -= transaction_obj.amount
 
-        account.save()
+            account.save()
 
 
 class TransactionDetailView(UserOwnedDetailView):
