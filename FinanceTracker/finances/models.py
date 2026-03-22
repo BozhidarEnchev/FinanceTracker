@@ -97,7 +97,7 @@ class MonthlyBudget(models.Model, BaseMixin):
         default=current_year,
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(current_year),
+            MaxValueValidator(2100),
         ]
     )
     user = models.ForeignKey(
