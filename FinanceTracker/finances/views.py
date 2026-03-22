@@ -1,3 +1,76 @@
-from django.shortcuts import render
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-# Create your views here.
+from FinanceTracker.finances.models import Transaction, TransactionCategory, MonthlyBudget, FinancialAccount
+from FinanceTracker.finances.serializers import TransactionReadSerializer, TransactionCategoryReadSerializer, \
+    MonthlyBudgetReadSerializer, FinancialAccountReadSerializer, TransactionWriteSerializer, \
+    TransactionCategoryWriteSerializer, MonthlyBudgetWriteSerializer, FinancialAccountWriteSerializer
+
+
+class UserOwnedListCreateView(ListCreateAPIView):
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return self.model.objects.all()
+        return self.model.objects.filter(user=self.request.user)
+
+
+class UserOwnedDetailView(RetrieveUpdateDestroyAPIView):
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return self.model.objects.all()
+        return self.model.objects.filter(user=self.request.user)
+
+class TransactionListCreateView(UserOwnedListCreateView):
+    model = Transaction
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            return TransactionWriteSerializer
+        return TransactionReadSerializer
+
+
+
+class TransactionDetailView(UserOwnedDetailView):
+    model = Transaction
+    serializer_class = TransactionWriteSerializer
+
+
+class TransactionCategoryListCreateView(UserOwnedListCreateView):
+    model = TransactionCategory
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            return TransactionCategoryWriteSerializer
+        return TransactionCategoryReadSerializer
+
+
+class TransactionCategoryDetailView(UserOwnedDetailView):
+    model = TransactionCategory
+    serializer_class = TransactionCategoryWriteSerializer
+
+
+class MonthlyBudgetListCreateView(UserOwnedListCreateView):
+    model = MonthlyBudget
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            return MonthlyBudgetWriteSerializer
+        return MonthlyBudgetReadSerializer
+
+
+class MonthlyBudgetDetailView(UserOwnedDetailView):
+    model = MonthlyBudget
+    serializer_class = MonthlyBudgetWriteSerializer
+
+
+class FinancialAccountListCreateView(UserOwnedListCreateView):
+    model = FinancialAccount
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            return FinancialAccountWriteSerializer
+        return FinancialAccountReadSerializer
+
+
+class FinancialAccountDetailView(UserOwnedDetailView):
+    model = FinancialAccount
+    serializer_class = FinancialAccountWriteSerializer
