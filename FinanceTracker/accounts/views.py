@@ -1,5 +1,5 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from FinanceTracker.accounts.models import AppUser
@@ -18,13 +18,11 @@ class AppUserListCreateAPIView(ListCreateAPIView):
 
 class AppUserDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = AppUserReadSerializer
-    def get_permissions(self):
-        if self.request.user.pk == self.request.GET.get('pk'):
-            return [IsAdminUser()]
-        return [AllowAny()]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return AppUser.objects.filter(pk=self.request.user.id)
+        return AppUser.objects.filter(pk=self.request.user.pk)
+
 
 class AppUserLoginAPIView(TokenObtainPairView):
     serializer_class = LoginSerializer
