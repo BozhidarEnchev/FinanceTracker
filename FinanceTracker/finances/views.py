@@ -1,3 +1,5 @@
+from threading import active_count
+
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -31,6 +33,18 @@ class TransactionListCreateView(UserOwnedListCreateView):
         if self.request.method in ['POST', 'PUT', 'PATCH']:
             return TransactionWriteSerializer
         return TransactionReadSerializer
+
+    def perform_create(self, serializer):
+        transaction_obj = serializer.save()
+        account = transaction_obj.account
+        category = transaction_obj.category
+
+        if category.is_saving:
+            account.amount += transaction_obj.amount
+        else:
+            account.amount -= transaction_obj.amount
+
+        account.save()
 
 
 class TransactionDetailView(UserOwnedDetailView):

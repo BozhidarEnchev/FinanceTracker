@@ -20,6 +20,11 @@ class Transaction(models.Model, BaseMixin):
         on_delete=models.CASCADE,
         related_name='transactions',
     )
+    account = models.ForeignKey(
+        'FinancialAccount',
+        on_delete=models.CASCADE,
+        related_name='transactions',
+    )
     date = models.DateField(
         default=datetime.date.today
     )
