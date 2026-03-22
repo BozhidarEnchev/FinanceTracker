@@ -1,8 +1,13 @@
 import datetime
+from decimal import Decimal
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from FinanceTracker.common.mixins import BaseMixin
+
+def current_year() -> int:
+    return datetime.date.today().year
 
 
 class Transaction(models.Model, BaseMixin):
@@ -13,7 +18,10 @@ class Transaction(models.Model, BaseMixin):
     )
     amount = models.DecimalField(
         decimal_places=2,
-        max_digits=10
+        max_digits=10,
+        validators=[
+            MinValueValidator(Decimal('0.01')),
+        ]
     )
     category = models.ForeignKey(
         'TransactionCategory',
@@ -60,17 +68,38 @@ class MonthlyBudget(models.Model, BaseMixin):
     needs_budget = models.DecimalField(
         decimal_places=2,
         max_digits=10,
+        validators=[
+            MinValueValidator(Decimal('0.00')),
+        ]
     )
     wants_budget = models.DecimalField(
         decimal_places=2,
         max_digits=10,
+        validators=[
+            MinValueValidator(Decimal('0.00')),
+        ]
     )
     savings_target = models.DecimalField(
         decimal_places=2,
         max_digits=10,
+        validators=[
+            MinValueValidator(Decimal('0.00')),
+        ]
     )
-    month = models.IntegerField()
-    year = models.IntegerField()
+    month = models.IntegerField(
+        default=datetime.date.today().month,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(12),
+        ]
+    )
+    year = models.IntegerField(
+        default=current_year,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(current_year),
+        ]
+    )
     user = models.ForeignKey(
         'accounts.AppUser',
         on_delete=models.CASCADE,
@@ -93,6 +122,9 @@ class FinancialAccount(models.Model, BaseMixin):
     amount = models.DecimalField(
         decimal_places=2,
         max_digits=10,
+        validators=[
+            MinValueValidator(Decimal('0.00')),
+        ]
     )
 
     def __str__(self):
