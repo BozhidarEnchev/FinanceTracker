@@ -1,6 +1,4 @@
 from django.urls import path
-
-from FinanceTracker.finances.serializers import FinancialAccountReadSerializer
 from FinanceTracker.finances.views import TransactionDetailView, TransactionListCreateView, \
     TransactionCategoryDetailView, TransactionCategoryListCreateView, MonthlyBudgetListCreateView, \
     MonthlyBudgetDetailView, FinancialAccountListCreateView, FinancialAccountDetailView

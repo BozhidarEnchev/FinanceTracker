@@ -1,4 +1,5 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from FinanceTracker.finances.models import Transaction, TransactionCategory, MonthlyBudget, FinancialAccount
 from FinanceTracker.finances.serializers import TransactionReadSerializer, TransactionCategoryReadSerializer, \
@@ -7,6 +8,8 @@ from FinanceTracker.finances.serializers import TransactionReadSerializer, Trans
 
 
 class UserOwnedListCreateView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         if self.request.user.is_staff:
             return self.model.objects.all()
@@ -14,6 +17,8 @@ class UserOwnedListCreateView(ListCreateAPIView):
 
 
 class UserOwnedDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         if self.request.user.is_staff:
             return self.model.objects.all()
@@ -26,7 +31,6 @@ class TransactionListCreateView(UserOwnedListCreateView):
         if self.request.method in ['POST', 'PUT', 'PATCH']:
             return TransactionWriteSerializer
         return TransactionReadSerializer
-
 
 
 class TransactionDetailView(UserOwnedDetailView):
